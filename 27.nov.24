@@ -1,0 +1,76 @@
+/*Variant 1: The main aim of the program is to read in a matrix of integers, find 
+the sum of all the elements under the main diagonal of the matrix and then display the 
+initial matrix and the sum of all elements under the main diagonal at the output.*/
+#include <stdio.h>
+
+// Prototypes
+int InputForDimensions();
+void InputForMatrix(int N, int M, int matrix[N][M]);
+int SumOfElements(int N, int M, int matrix[N][M]);
+void OutputResults(int N, int M, int matrix[N][M], int sum);
+
+// Main function
+int main() {
+    // Function calls
+    // Input
+    int N = InputForDimensions();
+    int M = InputForDimensions();
+    int matrix[N][M];
+    
+    // Process
+    InputForMatrix(N, M, matrix);
+    
+    int sum = SumOfElements(N, M, matrix);
+    
+    // Output
+    OutputResults(N, M, matrix, sum);
+    
+    return 0;
+}
+
+// Function to input dimensions
+int InputForDimensions() {
+    int dimension;
+    do {
+        printf("Enter the dimension (number of rows or columns): ");
+        scanf("%d", &dimension);
+        if (dimension <= 0) {
+            printf("Please enter a positive integer.\n");
+        }
+    } while (dimension <= 0);
+    return dimension;
+}
+
+// Function to input the matrix
+void InputForMatrix(int N, int M, int matrix[N][M]) {
+    printf("Enter the elements of the matrix (%d x %d):\n", N, M);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            printf("Element [%d][%d]: ", i, j);
+            scanf("%d", &matrix[i][j]);
+        }
+    }
+}
+
+// Function to calculate the sum of elements under the main diagonal
+int SumOfElements(int N, int M, int matrix[N][M]) {
+    int sum = 0;
+    for (int i = 1; i < N; i++) { // Start from row 1 to avoid the main diagonal
+        for (int j = 0; j < i && j < M; j++) { // Sum elements where j < i
+            sum += matrix[i][j];
+        }
+    }
+    return sum;
+}
+
+// Function to output the results
+void OutputResults(int N, int M, int matrix[N][M], int sum) {
+    printf("The matrix is:\n");
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+    printf("The sum of all elements under the main diagonal is: %d\n", sum);
+}
