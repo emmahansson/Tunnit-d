@@ -1,0 +1,47 @@
+//User inserts 3 numbers and programme outputs the biggest number.
+
+#include <stdio.h>
+
+//Prototypes
+int ask_for_numbers(char []);
+int get_biggest_number(int, int, int);
+void output_result(int);
+
+
+//Main function
+int main(void)
+{
+    int a = ask_for_numbers("Sisesta 1. arv.");
+    int b = ask_for_numbers("Sisesta 2. arv.");
+    int c = ask_for_numbers("Sisesta 3. arv.");
+    
+    int N = get_biggest_number(a, b, c);
+    
+    output_result(N);
+    
+    return 0;
+}
+
+// Function to ask for numbers
+int ask_for_numbers(char prompt[]) {
+    int number;
+    printf("%s\n", prompt); 
+    scanf("%d", &number);    
+    return number;           
+}
+
+// Function to get the biggest number
+int get_biggest_number(int x, int y, int z) {
+    if (x >= y && x >= z) {
+        return x; 
+    } else if (y >= x && y >= z) {
+        return y; 
+    } else {
+        return z; 
+    }
+}
+
+// Function to output the result
+void output_result(int biggest) {
+    printf("The biggest number is: %d\n", biggest); 
+}
