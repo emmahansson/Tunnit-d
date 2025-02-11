@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_RECORDS 100
+#define NAME_LENGTH 50
+#define HEX_LENGTH 10
+
+typedef struct {
+    char names[NAME_LENGTH];
+    int value;
+    char hexnr[HEX_LENGTH];
+} Input;
+
+// Function to compare two records based on value for sorting
+int compareByValue(const void *a, const void *b) {
+    Input *recordA = (Input *)a;
+    Input *recordB = (Input *)b;
+    return (recordA->value - recordB->value);
+}
+
+int main(void) {
+    FILE *task_file;
+    Input data[MAX_RECORDS];
+    int i = 0;
+
+    char file_name[] = "input.txt";
+
+    // Open the input file for reading
+    task_file = fopen(file_name, "r");
+    if (task_file == NULL) {
+        printf("File not found.\n");
+        return -1;
+    }
+
+    // Read data from the file into the data array
+    while (fscanf(task_file, "%s %d %s", data[i].names, &data[i].value, data[i].hexnr) != EOF) {
+        i++;
+    }
+    fclose(task_file);
+
+    // Sort the records based on the value field
+    qsort(data, i, sizeof(Input), compareByValue);
+
+    // Open the output file for writing
+    FILE *output_file = fopen("output.txt", "w");
+    if (output_file == NULL) {
+        printf("Error opening output file.\n");
+        return -1;
+    }
+
+    // Write the sorted records to the output file
+    for (int j = 0; j < i; j++) {
+        fprintf(output_file, "%s %d %s\n", data[j].names, data[j].value, data[j].hexnr);
+    }
+    fclose(output_file);
+
+    printf("Data sorted and written to output.txt successfully.\n");
+    return 0;
+}
