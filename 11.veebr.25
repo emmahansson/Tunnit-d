@@ -1,0 +1,125 @@
+//yl 1 ühelt lehelt. Sesestan 10 nime ja matrix nr ja isikukoodi ja arvuti sordib meesteks ja naisteks ning isikukoodi järgi paneb mehed ascending age orderisse ja naised decending age orderisse.
+
+#include <stdio.h>
+#include <string.h>
+
+#define CHAR_LEN 20
+#define NUM_PERSONS 10
+
+typedef struct Person {
+    char name[CHAR_LEN];
+    char surname[CHAR_LEN];
+    char personal_code[12]; //12 + null terminator for spring
+    char matrix_nr[7]; // 6 + null terminator
+    int gender; 
+    int birthYear; 
+} person_t;
+
+// Function prototypes
+void inputPersons(person_t persons[], int size);
+void processPersons(person_t persons[], int size);
+void outputPersons(person_t persons[], int size);
+void sortPersons(person_t persons[], int size);
+int calculateBirthYear(char personal_code[]);
+int calculateGender(char personal_code[]);
+
+int main(void) {
+    person_t persons[NUM_PERSONS]; // Array to store person data
+
+    // Call input function
+    inputPersons(persons, NUM_PERSONS);
+
+    // Call process function
+    processPersons(persons, NUM_PERSONS);
+
+    // Call output function
+    outputPersons(persons, NUM_PERSONS);
+
+    return 0;
+}
+
+// Function to input person data
+void inputPersons(person_t persons[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("Enter information for person %d:\n", i + 1);
+        printf("Name: ");
+        scanf("%s", persons[i].name);
+        printf("Surname: ");
+        scanf("%s", persons[i].surname);
+        printf("Personal code (11 digits): ");
+        scanf("%11s", persons[i].personal_code);
+        printf("Matrix number (6 digits): ");
+        scanf("%6s", persons[i].matrix_nr);
+    }
+}
+
+// Function to process person data (determine gender and birth year)
+void processPersons(person_t persons[], int size) {
+    for (int i = 0; i < size; i++) {
+        persons[i].gender = calculateGender(persons[i].personal_code);
+        persons[i].birthYear = calculateBirthYear(persons[i].personal_code);
+    }
+
+    // Sort persons by gender and age
+    sortPersons(persons, size);
+}
+
+// Function to output sorted person data
+void outputPersons(person_t persons[], int size) {
+    printf("\nMales (sorted by ascending age):\n");
+    for (int i = 0; i < size; i++) {
+        if (persons[i].gender == 1) {
+            printf("%s %s, Personal Code: %s, Birth Year: %d\n",
+                   persons[i].name, persons[i].surname, persons[i].personal_code, persons[i].birthYear);
+        }
+    }
+
+    printf("\nFemales (sorted by descending age):\n");
+    for (int i = 0; i < size; i++) {
+        if (persons[i].gender == 2) {
+            printf("%s %s, Personal Code: %s, Birth Year: %d\n",
+                   persons[i].name, persons[i].surname, persons[i].personal_code, persons[i].birthYear);
+        }
+    }
+}
+
+// Function to calculate birth year from personal code
+int calculateBirthYear(char personal_code[]) {
+    int genderCode = personal_code[0] - '0';
+    int yearCode = (personal_code[1] - '0') * 10 + (personal_code[2] - '0');
+
+    if (genderCode == 1 || genderCode == 2) {
+        return 1800 + yearCode;
+    } else if (genderCode == 3 || genderCode == 4) {
+        return 1900 + yearCode;
+    } else if (genderCode == 5 || genderCode == 6) {
+        return 2000 + yearCode;
+    }
+    return 0; // Default (should not happen)
+}
+
+// Function to calculate gender from personal code
+int calculateGender(char personal_code[]) {
+    int genderCode = personal_code[0] - '0';
+    return (genderCode % 2 == 0) ? 2 : 1; // 2 for female, 1 for male
+}
+
+// Function to sort persons by gender and age
+void sortPersons(person_t persons[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            // Sort males in ascending order of birth year
+            if (persons[j].gender == 1 && persons[j + 1].gender == 1 && persons[j].birthYear > persons[j + 1].birthYear) {
+                person_t temp = persons[j];
+                persons[j] = persons[j + 1];
+                persons[j + 1] = temp;
+            }
+            // Sort females in descending order of birth year
+            else if (persons[j].gender == 2 && persons[j + 1].gender == 2 && persons[j].birthYear < persons[j + 1].birthYear) {
+                person_t temp = persons[j];
+                persons[j] = persons[j + 1];
+                persons[j + 1] = temp;
+            }
+        }
+    }
+}
